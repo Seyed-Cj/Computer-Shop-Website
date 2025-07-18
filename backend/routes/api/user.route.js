@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../../controllers/user.controller');
-const createRateLimiter = require('../../middleware/rateLimiter')
+const createRateLimiter = require('../../middlewares/rateLimiter')
 
 const regRateLimiter = createRateLimiter({ max: 8, windowMs: 5 * 60 * 1000 });
 router.post('/register', regRateLimiter, authController.Register);

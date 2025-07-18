@@ -16,6 +16,18 @@ const userSchema = new Schema({
   loyaltyPoints: { type: Number, default: 0 },
 }, { timestamps: true });
 
+const adminSchema = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  phone: { type: String, required: true},
+  role: { type: String, enum: ['superadmin', 'productManager', 'orderManager', 'userManager'], required: true },
+  password: { type: String, required: true },
+  emailVerified: { type: Boolean, default: false },
+  lastLogin: Date,
+  activityLog: [{ action: String, date: Date }],
+}, { timestamps: true });
+
 module.exports = {
-  User: mongoose.model('User', userSchema)
+  User: mongoose.model('User', userSchema),
+  Admin: mongoose.model('Admin', userSchema)
 };
