@@ -19,6 +19,20 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 app.use(methodOverride('_method'));
+app.use((req, res, next) => {
+  const token = req.cookies.token;
+  if (token) {
+    try {
+      const decoded = verifyToken(token);
+      res.locals.user = decoded;
+    } catch (err) {
+      res.locals.user = null;
+    }
+  } else {
+    res.locals.user = null;
+  }
+  next();
+});
 
 app.use('/api', API);
 
