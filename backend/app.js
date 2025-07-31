@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 // const { verifyAdminToken } = require('./utils/adminJwt');
 const API = require('./routes/main.route');
+const cors = require('cors')
 
 const app = express();
 
@@ -16,6 +17,11 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+  origin: 'http://localhost:5173', // یا دامنه واقعی فرانت
+  credentials: true
+}));
+
 
 app.use(cookieParser());
 app.use(methodOverride('_method'));

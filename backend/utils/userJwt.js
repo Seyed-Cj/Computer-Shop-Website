@@ -11,4 +11,17 @@ function verifyToken(token) {
   return jwt.verify(token, JWT_SECRET);
 }
 
-module.exports = { generateToken, verifyToken };
+const authMiddleware = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ success: false, message: 'توکن یافت نشد' });
+
+  try {
+    const decoded = verifyToken(token);
+    req.user = decoded; // شامل id, name
+    next();
+  } catch (err) {
+    return res.status(401).json({ success: false, message: 'توکن نامعتبر است' });
+  }
+};
+
+module.exports = { generateToken, verifyToken, authMiddleware };

@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const { User } = require('../models/user_model');
 const { generateToken } = require('../utils/userJwt');
 
-exports.Register = async (req, res) => {
+exports.Signup = async (req, res) => {
   try {
     const { name, family, email, phone, password, confirmPassword } = req.body;
 
@@ -67,14 +67,16 @@ exports.Login = async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
-    const token = generateToken(user);
+    const token = generateToken(user); 
+
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.json({ success: true, message: 'ورود موفقیت‌آمیز بود.', data: { token } });
+    res.json({ success: true, message: 'ورود موفقیت‌آمیز بود.' });
 
   } catch (error) {
     console.error(error);
@@ -105,5 +107,17 @@ exports.checkLogin = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'خطا در بررسی شماره. لطفاً دوباره تلاش کنید.' });
+  }
+};
+
+// controller/authController.js
+exports.checkToken = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) return res.status(404).json({ success: false, message: 'کاربر یافت نشد' });
+
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'خطای سرور' });
   }
 };

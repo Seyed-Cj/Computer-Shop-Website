@@ -3,7 +3,7 @@ const { verifyAdminToken } = require('../utils/adminJwt');
 function isAdminAuthenticated(req, res, next) {
   const token = req.cookies.adminToken;
   if (!token) {
-    return res.status(401).json({ success: false, message: 'دسترسی نامعتبر.' });
+    return res.status(403).json({ success: false, message: 'شما دسترسی لازم را ندارید' });
   }
 
   try {
@@ -11,7 +11,7 @@ function isAdminAuthenticated(req, res, next) {
     req.admin = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ success: false, message: 'توکن نامعتبر.' });
+    return res.status(403).json({ success: false, message: 'شما دسترسی لازم را ندارید' });
   }
 }
 
