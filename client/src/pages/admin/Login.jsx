@@ -1,26 +1,19 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthContext from '../contexts/AuthContext';
+import axios from 'axios';
 
-export default function Login() {
-  const [phone, setPhone] = useState('');
+export default function AdminLogin() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { user, login } = useContext(AuthContext);
-
-  useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     try {
-      const res = await login(phone, password)
+      const res = await axios.post('http://localhost:3000/api/admin/login', { email, password }, { withCredentials: true });
 
       navigate('/admin/dashboard');
     } catch (err) {
@@ -37,12 +30,12 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="phone">شماره تلفن:</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">ایمیل:</label>
               <input
                 type="text"
-                id="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
               />
@@ -68,10 +61,6 @@ export default function Login() {
           </form>
 
           {error && <p className="text-red-500 text-sm text-center mt-4">{error}</p>}
-
-          <p className="mt-4 text-center text-sm text-gray-600">
-            حساب کاربری ندارید؟ <a href="/account/register" className="text-red-600 hover:underline">ثبت نام کنید</a>
-          </p>
         </div>
       </div>
     </div>

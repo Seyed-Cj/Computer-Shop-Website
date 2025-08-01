@@ -2,7 +2,7 @@
 
 export default function Sidebar({ sidebarOpen, adminName, adminRole, totalProducts }) {
   return (
-    <aside
+    <section
       className={`${
         sidebarOpen ? "translate-x-0" : "translate-x-full"
       } lg:translate-x-0 fixed right-0 top-0 z-20 w-64 h-screen bg-gray-900 text-white transform transition-transform duration-300 shadow-lg`}
@@ -76,6 +76,6 @@ export default function Sidebar({ sidebarOpen, adminName, adminRole, totalProduc
           </span>
         </a>
       </nav>
-    </aside>
+    </section>
   );
 }
