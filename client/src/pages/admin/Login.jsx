@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Input } from '../../components/ui';
+
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -31,25 +33,21 @@ export default function AdminLogin() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">ایمیل:</label>
-              <input
+              <Input
                 type="text"
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              />
+                required />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">رمز عبور:</label>
-              <input
+              <Input
                 type="password"
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              />
+                required />
             </div>
 
             <button

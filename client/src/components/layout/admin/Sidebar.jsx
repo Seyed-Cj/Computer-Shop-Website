@@ -1,11 +1,39 @@
+import axios from "axios";
+import { Dropdown } from "../../ui";
+import { FaSignOutAlt, FaUser } from "react-icons/fa";
+import { IoSettingsSharp } from "react-icons/io5";
+import { FaChartLine, FaUsers, FaBox, FaList, FaBell } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
+
+export default function Sidebar({ sidebarOpen, adminName, adminRole, totalProducts, onViewChange }) {
+
+  const navigate = useNavigate();
+
+  const profile = [
+    { label: "تنظیمات", value: "settings", icon: <IoSettingsSharp className="text-gray-400 text-lg mt-0" /> },
+    { label: "خروج", value: "logout", icon: <FaSignOutAlt className="text-red-500 text-lg" /> },
+  ]
+
+  const handleSelect = async (item) => {
+    if (item.value === 'logout') {
+      try {
+        await axios.post('http://localhost:3000/api/admin/logout', {}, { withCredentials: true });
+
+        navigate('/');
+      } catch (err) {
+        console.error("خطا در خروج:", err);
+      }
+    }
+    if (item.value === 'settings') {
+      onViewChange('settings')
+    }
+  };
 
 
-export default function Sidebar({ sidebarOpen, adminName, adminRole, totalProducts }) {
   return (
     <section
-      className={`${
-        sidebarOpen ? "translate-x-0" : "translate-x-full"
-      } lg:translate-x-0 fixed right-0 top-0 z-20 w-64 h-screen bg-gray-900 text-white transform transition-transform duration-300 shadow-lg`}
+      className={`${sidebarOpen ? "translate-x-0" : "translate-x-full"
+        } lg:translate-x-0 fixed right-0 top-0 z-20 w-64 h-screen bg-[#081b22] text-white transform transition-transform duration-300 shadow-lg`}
     >
       <div className="p-5 border-b border-gray-700 flex flex-col items-center">
         <img
@@ -17,64 +45,39 @@ export default function Sidebar({ sidebarOpen, adminName, adminRole, totalProduc
         <p className="text-gray-400 text-sm">{adminRole}</p>
 
         <div className="mt-4 space-y-1 text-sm w-full">
-          <a
-            href="/admin/profile"
-            className="flex items-center px-3 py-1.5 rounded hover:bg-gray-800"
-          >
-            <i className="fas fa-user ml-2 text-gray-400 w-4"></i> پروفایل
-          </a>
-          <a
-            href="/admin/settings"
-            className="flex items-center px-3 py-1.5 rounded hover:bg-gray-800"
-          >
-            <i className="fas fa-cog ml-2 text-gray-400 w-4"></i> تنظیمات
-          </a>
-          <form
-            action="/admin/logout"
-            method="POST"
-            className="flex items-center px-3 py-1.5 rounded hover:bg-red-600 text-red-400"
-          >
-            <i className="fas fa-sign-out-alt ml-2 w-4"></i>{" "}
-            <button type="submit">خروج</button>
-          </form>
+          <Dropdown label="پروفایل" items={profile} icon={<FaUser />} dropdownClassName="font-bold" onSelect={handleSelect} />
         </div>
       </div>
 
-      <nav className="mt-6 space-y-2 px-4 text-sm">
-        <a
-          href="/admin/users"
-          className="flex items-center p-2 rounded hover:bg-gray-800 transition"
+      <nav className="flex flex-col gap-2 p-4">
+        <button className="relative flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/50 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 group"
+          onClick={() => onViewChange('dashboard')}  
         >
-          <i className="fas fa-users w-5 text-gray-400 ml-2"></i>
+          <FaChartLine className="text-lg" />
+          داشبورد
+        </button>
+        <button className="relative flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/50 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 group">
+          <FaUsers className="text-lg" />
           کاربران
-        </a>
-        <a
-          href="/admin/products"
-          className="flex items-center p-2 rounded hover:bg-gray-800 transition relative"
-        >
-          <i className="fas fa-microchip w-5 text-gray-400 ml-2"></i>
+        </button>
+        <button className="relative flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/50 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 group">
+          <FaBox className="text-lg" />
           محصولات
-          <span className="absolute left-2 bg-blue-600 text-white text-xs rounded-full px-2 py-0.5">
-            {totalProducts}
+          <span className="absolute left-2 top-1/2 -translate-y-1/2 bg-emerald-500 text-white text-xs font-semibold rounded-full px-2 py-0.5 group-hover:bg-emerald-600 transition-colors duration-200">
+            {totalProducts.toLocaleString('fa-IR')}
           </span>
-        </a>
-        <a
-          href="/admin/categories"
-          className="flex items-center p-2 rounded hover:bg-gray-800 transition"
-        >
-          <i className="fas fa-list w-5 text-gray-400 ml-2"></i>
+        </button>
+        <button className="relative flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/50 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 group">
+          <FaList className="text-lg" />
           دسته‌بندی‌ها
-        </a>
-        <a
-          href="/admin/orders"
-          className="flex items-center p-2 rounded hover:bg-gray-800 transition relative"
-        >
-          <i className="fas fa-shopping-cart w-5 text-gray-400 ml-2"></i>
-          سفارشات
-          <span className="absolute left-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
-            10
+        </button>
+        <button className="relative flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/50 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 group">
+          <FaBell className="text-lg" />
+          اعلان‌ها
+          <span className="absolute left-2 top-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-semibold rounded-full px-2 py-0.5 group-hover:bg-red-600 transition-colors duration-200">
+            ۱۰
           </span>
-        </a>
+        </button>
       </nav>
     </section>
   );

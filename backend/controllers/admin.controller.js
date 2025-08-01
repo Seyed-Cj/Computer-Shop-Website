@@ -5,6 +5,10 @@ const { generateAdminToken } = require('../utils/adminJwt');
 
 exports.getDashboard = async (req, res) => {
   try {
+    if (!req.admin) {
+      return res.status(401).json({ success: false, message: 'عدم دسترسی' });
+    }
+
     const totalProducts = await Product.countDocuments();
     const totalUsers = await User.countDocuments();
 
@@ -17,9 +21,17 @@ exports.getDashboard = async (req, res) => {
     };
     const adminRole = roleMap[req.admin.role] || 'مدیر';
 
-    res.json({ success: true, data: { totalProducts, totalUsers, adminName, adminRole } });
+    res.json({
+      success: true,
+      data: {
+        totalProducts,
+        totalUsers,
+        adminName,
+        adminRole
+      }
+    });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'خطا در دریافت اطلاعات' });
+    res.status(500).json({ success: false, message: 'خطا در دریافت اطلاعات', error: err.message });
   }
 };
 
